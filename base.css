@@ -1,0 +1,52 @@
+body {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+
+}
+
+.radioSelected {
+    display: flex;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-form{ 
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.header {
+    background-color: bisque;
+    display: grid;
+    grid-template-columns: repeat(5 , 1fr);
+    grid-template-rows: 20px;
+    gap: 2px;
+    font-size: medium;
+    text-align: center
+;
+
+}
+.inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.tableDiv {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="base.css">
+</head>
+
+<body>
+    <div class="tableDiv">
+        <div class="header">
+            <div>title</div>
+            <div>author</div>
+            <div>numbers of page</div>
+            <div>read</div>
+            <div>delete</div>
+        </div>
+        <div class="content">
+
+        </div>
+    </div>
+
+
+    <div class="input-form">
+        <form class="form">
+            <div class="inner">
+                <label for="title">title</label>
+                <input type="text" id="title">
+            </div>
+            <div class="inner">
+                <label for="author">author</label>
+                <input type="text" id="author">
+            </div>
+            <div class="inner">
+                <label for="numOfPage">numbers of page</label>
+                <input type="number" name="" id="numOfpage">
+            </div>
+            <div class="inner">
+                <label for="read"></label>
+                <div id="radioSelected">
+                    <select name="isRead" id="isRead">
+                        <option value="true">read</option>
+                        <option value="false">not yet</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <button id="btn">add book</button>
+
+    </div>
+</body>
+<script src="base.js"></script>
+
+</html>
