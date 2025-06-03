@@ -1,52 +1,95 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
 body {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    grid-template-rows: auto;
-    gap: 10px;
-
+  background-color: #f4f6f8;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.radioSelected {
-    display: flex;
-}
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.input-form{ 
-    background-color: antiquewhite;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+/* Book input container */
+#head-content {
+  background-color: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
 }
 
-.header {
-    background-color: bisque;
-    display: grid;
-    grid-template-columns: repeat(5 , 1fr);
-    grid-template-rows: 20px;
-    gap: 2px;
-    font-size: medium;
-    text-align: center
-;
-
-}
-.inner {
-    display: flex;
-    flex-direction: column;
+#head-content h2 {
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
 }
 
-.tableDiv {
-    display: flex;
-    flex-direction: column;
-
+#notification {
+  color: green;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2px;
+/* Input and Button */
+input[type="text"],
+input[type="number"] {
+  padding: 10px;
+  width: 100%;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
 
+button#addBookBtn {
+  padding: 12px;
+  width: 100%;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 16px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button#addBookBtn:hover {
+  background-color: #4338ca;
+}
+
+/* Book list section */
+#bookList {
+  width: 100%;
+  max-width: 500px;
+}
+
+.book-item {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.book-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.book-quantity {
+  font-size: 14px;
+  color: #666;
 }

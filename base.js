@@ -1,117 +1,150 @@
-let myLibrary = [];
-
-function Book(title, author , pages , read) {
-    this.title = title 
-    this.author = author 
-    this.read = read
-    this.pages = pages
-    this.id = crypto.randomUUID()
-}
-
-Book.prototype.info = function() {
-    console.log(`${this.id} ${this.title}`)
-}
-
-function addBookToLibrary(book) {
-    myLibrary.push(book)
-}
-
-function createDiv () {
-    let newDiv = document.createElement('div')
-    return newDiv
-}
-
-function appendDivToContentTable() {
-    
-    const contentDiv = document.querySelector('.content')
-    while (contentDiv.firstChild){
-        contentDiv.removeChild(contentDiv.firstChild)
+let books = []
+const btn = document.querySelector('#addBookBtn')
+const notification = document.querySelector('#notification')
+const bookList = document.querySelector('#bookList')
+class Book {
+    constructor(title , quantity) {
+        this._title = title
+        this._quantity = quantity
+        Object.defineProperty(this , '_id' , {
+            value : crypto.randomUUID()
+        })
     }
-    for (let index = 0; index < myLibrary.length; index++) {
-        const newDiv = createDiv()
-        const titleDiv = createDiv()
-        const author = createDiv()
-        const numOfpage = createDiv()
-        const isRead = createDiv()
-        const DeleteBtn = document.createElement('button')
-        DeleteBtn.classList.add("deleteBtn");
-        DeleteBtn.id = myLibrary[index].id
-        DeleteBtn.innerHTML = "delete"
+    get title(){
+        return this._title
+    }
+    set title(value) {
+        this._title = value
+    }
+    get quantity() {
+        return this._quantity
+    }
+    set quantity(value) {
+        this._quantity = value
+    }
+    get id() {
+        return this._id
+    }
+}
 
-        titleDiv.innerHTML = myLibrary[index].title
-        author.innerHTML = myLibrary[index].author
-        numOfpage.innerHTML = myLibrary[index].pages
-        isRead.innerHTML = myLibrary[index].read
-
-        newDiv.appendChild(titleDiv)
-        newDiv.appendChild(author)
-        newDiv.appendChild(numOfpage)
-
-        const selectDiv  = document.createElement('select')
-        const option = document.createElement('option')
-        option.value = true
-        option.textContent = "true"
-        const option2 = document.createElement('option')
-        option2.value = false
-        option2.textContent = "false"
-        if (myLibrary[index].read == "true") {
-            option.selected = true
-        } else {
-            option2.selected = true
+const eventsHub = {
+    events : {},
+    sub(event , fn){
+        this.events[event] = this.events[event] || []
+        this.events[event].push(fn)
+    },
+    pub(event , data){
+        if (this.events[event]) {
+            this.events[event].forEach(fn => fn(data));
         }
-        selectDiv.classList.add('readSelected')
-        selectDiv.id = "selected"+myLibrary[index].id
-        selectDiv.appendChild(option)
-        selectDiv.appendChild(option2)
-        newDiv.appendChild(selectDiv)
-
-        newDiv.appendChild(DeleteBtn)
-
-        newDiv.style.display = 'grid'
-        newDiv.style.gridTemplateColumns = 'repeat(5 , 1fr)'
-        newDiv.style.textAlign = 'center'
-        newDiv.style.borderBottom = '1px gray solid'
-        newDiv.style.borderRight = '1px gray solid'
-        newDiv.style.borderLeft = '1px gray solid'
-
-        contentDiv.appendChild(newDiv)
     }
 }
-const table = document.querySelector('.table')
-const btn = document.querySelector('#btn')
-btn.addEventListener('click' , ()=> {
-    const title = document.querySelector('#title').value
-    const author = document.querySelector('#author').value
-    const isRead = document.querySelector('#isRead').value
-    const numOfpage = document.querySelector('#numOfpage').value
-    const book = new Book(title , author , numOfpage , isRead)
-    addBookToLibrary(book)
-    appendDivToContentTable()
+
+btn.addEventListener('click' , addBook);
+eventsHub.sub('bookAdded' , ()=> {
+    whenBooksChanged()
 })
 
+function addBook() {
+    const title = document.querySelector('#bookTitle').value
+    const quantity = document.querySelector('#quantity').value
+    let newBook = new Book(title , quantity)
+    books.push(newBook)
+    eventsHub.pub('bookAdded' , {title : newBook.title , quantity : newBook.quantity})
+}
 
-document.querySelector('.content').addEventListener('click', (e) => {
+eventsHub.sub('bookAdded' , (data) => {
+    notification.innerHTML = `the book name ${data.title} was added with quantity is ${data.quantity}`
+})
 
-  if (e.target.classList.contains('deleteBtn')) {
-        myLibrary = myLibrary.filter((book) => book.id != e.target.id);
-        console.log(myLibrary);
-    appendDivToContentTable()
-  }
+eventsHub.sub('bookAdded' ,() => {
+    render()
+})
 
-});
+eventsHub.sub('bookDeleted' , (name) => {
+    notification.innerHTML = `the book name ${name} was deleted `
+})
 
+eventsHub.sub('quantityChange' , (data) => {
+    books.find((b) => b.id === data.bookId).quantity = data.quantity
+    notification.innerHTML = `the book name ${data.title} was changed  quantity with new value ${data.quantity}`
 
-document.querySelector('.content').addEventListener('change', (e) => {
+})
 
-  if (e.target.classList.contains('readSelected')) {
-        let se = document.querySelector(`#${e.target.id}`)
-        // console.log(se.value);
-        
-        let b = myLibrary.find((book) =>"selected"+book.id == e.target.id)
-        b.read = se.value
-        appendDivToContentTable()
-  }
+function whenBooksChanged(){
+      while(bookList.firstChild) {
+        bookList.removeChild(bookList.firstChild)
+    }
+}
 
-});
+function deleteBook(e) {
+    let title = books.find((b) => b.id == e.target.id).title
+    books = books.filter((b) => b.id != e.target.id)
+    eventsHub.pub('bookDeleted' , (title))
+    whenBooksChanged()
+    render()
+}
 
+function render() {
+    books.forEach((book) => {
+        const newDiv = document.createElement('div');
+        newDiv.style.display = "grid";
+        newDiv.style.gridTemplateColumns = "1fr 1fr auto";
+        newDiv.style.gap = "10px";
+        newDiv.style.alignItems = "center";
+        newDiv.style.padding = "12px 16px";
+        newDiv.style.marginBottom = "12px";
+        newDiv.style.backgroundColor = "#fff";
+        newDiv.style.borderRadius = "10px";
+        newDiv.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.05)";
 
+        const quantityInput = document.createElement('input');
+        quantityInput.type = "number";
+        quantityInput.value = book.quantity;
+        quantityInput.style.padding = "8px 10px";
+        quantityInput.style.border = "1px solid #ccc";
+        quantityInput.style.borderRadius = "6px";
+        quantityInput.style.fontSize = "14px";
+        quantityInput.style.width = "100%";
+        quantityInput.addEventListener('change', () => {
+            eventsHub.pub('quantityChange', {
+                quantity: quantityInput.value,
+                bookId: book.id,
+                bookTitle: book.title
+            });
+        });
+
+        const titleDiv = createBookDiv(book.title);
+        titleDiv.style.padding = "8px 10px";
+        titleDiv.style.backgroundColor = "#f9fafb";
+        titleDiv.style.border = "1px solid #ddd";
+        titleDiv.style.borderRadius = "6px";
+        titleDiv.style.fontSize = "15px";
+        titleDiv.style.fontWeight = "500";
+        titleDiv.style.color = "#333";
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.id = book.id;
+        deleteBtn.innerHTML = "✕";
+        deleteBtn.style.padding = "8px";
+        deleteBtn.style.width = "40px";
+        deleteBtn.style.backgroundColor = "#ef4444";
+        deleteBtn.style.color = "white";
+        deleteBtn.style.border = "none";
+        deleteBtn.style.borderRadius = "6px";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.style.fontWeight = "bold";
+        deleteBtn.addEventListener('click', deleteBook);
+
+        newDiv.appendChild(titleDiv);
+        newDiv.appendChild(quantityInput);
+        newDiv.appendChild(deleteBtn);
+        bookList.appendChild(newDiv);
+    });
+}
+
+function createBookDiv(data){
+    let div = document.createElement('div')
+    div.innerHTML = data
+    return div
+}
